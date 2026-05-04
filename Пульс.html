@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Пульс Пантеры</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="icon"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%231a1a3e'/%3E%3Cpolygon points='15,35 5,5 35,15' fill='%23e0218a'/%3E%3Cpolygon points='85,35 95,5 65,15' fill='%23e0218a'/%3E%3Cellipse cx='50' cy='55' rx='38' ry='35' fill='%23e0218a'/%3E%3Cellipse cx='35' cy='50' rx='8' ry='9' fill='white'/%3E%3Cellipse cx='65' cy='50' rx='8' ry='9' fill='white'/%3E%3Ccircle cx='35' cy='50' r='4' fill='%231a1a3e'/%3E%3Ccircle cx='65' cy='50' r='4' fill='%231a1a3e'/%3E%3Cpolygon points='50,58 44,65 56,65' fill='%23ff6b8a'/%3E%3Cline x1='10' y1='58' x2='30' y2='60' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3Cline x1='12' y1='68' x2='30' y2='65' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3Cline x1='90' y1='58' x2='70' y2='60' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3Cline x1='88' y1='68' x2='70' y2='65' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
+    <style>
+        :root {
+            --pink: #e0218a;
+            --pink-light: #fce4f0;
+            --bg: #faf8fc;
+            --surface: #ffffff;
+            --text: #1a1a2e;
+            --text-muted: #8e8ea0;
+            --study: #e0218a;
+            --body-color: #f5a623;
+            --resource: #2ecc71;
+            --recovery: #7c5ce7;
+            --border: #f0e6f6;
+            --radius: 18px;
+            --shadow: 0 2px 12px rgba(0,0,0,0.06);
+            --font: -apple-system, BlinkMacSystemFont, 'SF Pro Rounded', 'Segoe UI', system-ui, sans-serif;
+            --tab-height: 72px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: var(--tab-height);
+            transition: background 0.5s ease;
+            pointer-events: auto;
+        }
+
+        .tab-content { display: none; padding: 16px; padding-top: 8px; max-width: 480px; margin: 0 auto; }
+        .tab-content.active { display: block; }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: var(--tab-height);
+            padding-bottom: env(safe-area-inset-bottom, 8px);
+            z-index: 100;
+            box-shadow: 0 -2px 16px rgba(0,0,0,0.04);
+        }
+
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            pointer-events: auto;
+            font-family: var(--font);
+            font-size: 11px;
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: 12px;
+            transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .nav-btn.active { color: var(--pink); font-weight: 600; }
+        .nav-btn .nav-icon { font-size: 22px; transition: all 0.2s; }
+
+        .app-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 4px 0 12px;
+            flex-wrap: wrap;
+        }
+
+        .avatar-circle {
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e0218a, #ff6b9d);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 26px;
+            cursor: pointer;
+            pointer-events: auto;
+            flex-shrink: 0;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(224,33,138,0.3);
+        }
+
+        .name-input {
+            flex: 1; min-width: 120px;
+            border: none; background: transparent;
+            font-family: var(--font); font-size: 16px; font-weight: 600;
+            color: var(--text);
+            outline: none;
+            border-bottom: 2px dashed var(--border);
+            padding: 4px 0;
+            pointer-events: auto;
+        }
+
+        .header-badges {
+            display: flex; gap: 8px; align-items: center; flex-shrink: 0;
+        }
+
+        .badge {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 6px 10px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex; align-items: center; gap: 4px;
+            box-shadow: var(--shadow);
+        }
+
+        .badge .count { color: var(--pink); font-weight: 700; }
+
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+            pointer-events: auto;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .week-tracker {
+            display: flex; gap: 6px; justify-content: space-between;
+        }
+
+        .week-day {
+            width: 40px; height: 48px;
+            border-radius: 12px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 600;
+            background: var(--surface);
+            border: 2px solid var(--border);
+            transition: all 0.3s;
+            pointer-events: auto;
+            cursor: pointer;
+        }
+
+        .week-day .day-label { font-size: 10px; color: var(--text-muted); }
+        .week-day .day-num { font-size: 13px; }
+        .week-day.today { border-color: var(--pink); border-width: 2.5px; }
+        .week-day.completed { background: var(--pink); border-color: var(--pink); color: white; }
+        .week-day.completed .day-label { color: rgba(255,255,255,0.8); }
+        .week-day.partial {
+            background: linear-gradient(135deg, var(--pink) 50%, #e8e8e8 50%);
+            border-color: var(--pink);
+        }
+        .week-day.missed { background: #e8e8e8; border-color: #ddd; color: #999; }
+        .week-day.future { border-style: dashed; opacity: 0.6; }
+
+        .ring-wrap {
+            display: flex; justify-content: center; margin: 8px 0;
+        }
+
+        .habit-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            box-shadow: var(--shadow);
+            display: flex; align-items: center; gap: 12px;
+            cursor: pointer; pointer-events: auto;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .habit-card.completed {
+            border-color: var(--pink);
+            background: var(--pink-light);
+        }
+
+        .habit-card .habit-icon { font-size: 30px; flex-shrink: 0; }
+        .habit-card .habit-info { flex: 1; }
+        .habit-card .habit-name { font-weight: 600; font-size: 15px; }
+        .habit-card .habit-detail { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+        .habit-card .check-circle {
+            width: 28px; height: 28px; border-radius: 50%;
+            border: 2.5px solid var(--border); flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s;
+        }
+        .habit-card.completed .check-circle {
+            background: var(--pink); border-color: var(--pink);
+        }
+        .habit-card.completed .check-circle::after {
+            content: '✓'; color: white; font-weight: 700; font-size: 14px;
+        }
+
+        .stats-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;
+        }
+
+        .stat-card {
+            background: var(--surface); border-radius: var(--radius); padding: 14px;
+            box-shadow: var(--shadow); text-align: center;
+        }
+        .stat-card .stat-num { font-size: 28px; font-weight: 800; color: var(--pink); }
+        .stat-card .stat-label { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+        .progress-bar-wrap {
+            background: #f0e6f6; border-radius: 10px; height: 8px; margin: 4px 0 10px;
+        }
+        .progress-bar-fill {
+            background: var(--pink); border-radius: 10px; height: 100%; transition: width 0.5s;
+        }
+
+        .heatmap-grid {
+            display: flex; flex-wrap: wrap; gap: 4px; justify-content: flex-start;
+        }
+        .heatmap-cell {
+            width: 30px; height: 30px; border-radius: 6px;
+            font-size: 10px; display: flex; align-items: center; justify-content: center;
+            background: #eee; color: #999;
+        }
+        .heatmap-cell.l1 { background: #fce4f0; color: #c2187a; }
+        .heatmap-cell.l2 { background: #f8bbd0; color: #c2187a; }
+        .heatmap-cell.l3 { background: #f06292; color: white; }
+        .heatmap-cell.l4 { background: #e0218a; color: white; font-weight: 700; }
+
+        .achieve-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+        }
+        .achieve-card {
+            background: var(--surface); border-radius: var(--radius); padding: 16px;
+            text-align: center; box-shadow: var(--shadow);
+            transition: all 0.3s;
+        }
+        .achieve-card.locked { opacity: 0.5; filter: grayscale(0.5); }
+        .achieve-card .achieve-icon { font-size: 36px; }
+        .achieve-card .achieve-name { font-weight: 600; font-size: 13px; margin-top: 4px; }
+        .achieve-card .achieve-desc { font-size: 11px; color: var(--text-muted); }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            display: flex; align-items: center; justify-content: center;
+            pointer-events: auto;
+        }
+        .modal-overlay.hidden { display: none; }
+        .modal-box {
+            background: var(--surface); border-radius: 20px; padding: 24px;
+            max-width: 320px; width: 90%; text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        .modal-box h3 { margin-bottom: 8px; }
+        .modal-box .btn {
+            display: inline-block; margin: 8px 6px; padding: 10px 20px;
+            border-radius: 20px; border: none; cursor: pointer;
+            font-family: var(--font); font-weight: 600; font-size: 14px;
+            pointer-events: auto;
+        }
+        .btn-pink { background: var(--pink); color: white; }
+        .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text); }
+
+        .toast {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            background: var(--surface); border-radius: 20px; padding: 14px 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            z-index: 300; font-weight: 600; font-size: 14px;
+            pointer-events: auto;
+            animation: slideDown 0.4s ease;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .btn-action {
+            display: block; width: 100%; padding: 14px;
+            background: var(--pink); color: white; border: none;
+            border-radius: 20px; font-family: var(--font); font-size: 16px;
+            font-weight: 700; cursor: pointer; pointer-events: auto;
+            margin-top: 8px; text-align: center;
+            box-shadow: 0 4px 12px rgba(224,33,138,0.3);
+            transition: all 0.2s;
+        }
+
+        .panther-strip {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px; background: var(--surface); border-radius: var(--radius);
+            box-shadow: var(--shadow); margin: 8px 0; cursor: pointer; pointer-events: auto;
+        }
+        .panther-strip .mini-avatar { font-size: 24px; }
+        .panther-strip .phrase { font-size: 13px; color: var(--text-muted); font-style: italic; flex: 1; }
+
+        .anatomy-preview {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 14px 16px;
+            margin: 10px 0;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+        .anatomy-preview .anatomy-icon { font-size: 32px; }
+        .anatomy-preview .anatomy-info { flex: 1; }
+        .anatomy-preview .anatomy-topic { font-weight: 600; font-size: 14px; }
+        .anatomy-preview .anatomy-repeat { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+        .quick-actions {
+            display: flex; gap: 8px; margin: 10px 0; flex-wrap: wrap;
+        }
+        .quick-btn {
+            flex: 1; min-width: 70px;
+            background: var(--surface);
+            border: none; border-radius: var(--radius);
+            padding: 12px 8px; font-family: var(--font); font-size: 13px;
+            font-weight: 600; cursor: pointer; pointer-events: auto;
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            box-shadow: var(--shadow);
+            transition: all 0.2s;
+        }
+        .quick-btn:active { background: var(--pink-light); transform: scale(0.96); }
+        .quick-btn .quick-icon { font-size: 22px; }
+
+        .mini-stats {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 12px 16px;
+            margin: 10px 0;
+            display: flex; align-items: center; gap: 16px;
+            box-shadow: var(--shadow);
+            font-size: 13px;
+            flex-wrap: wrap;
+        }
+        .mini-stats .stat-item { display: flex; align-items: center; gap: 4px; }
+        .mini-stats .stat-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .mini-stats .stat-dot.done { background: var(--pink); }
+        .mini-stats .stat-dot.left { background: #ddd; }
+
+        .perfect-day-bar {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 12px 16px;
+            margin: 10px 0;
+            display: flex; align-items: center; gap: 10px;
+            box-shadow: var(--shadow);
+            font-size: 13px; font-weight: 500;
+        }
+        .perfect-day-bar .crown { font-size: 24px; }
+        .perfect-day-fill { flex: 1; height: 8px; background: #f0e6f6; border-radius: 10px; overflow: hidden; }
+        .perfect-day-fill-inner { height: 100%; background: var(--pink); border-radius: 10px; transition: width 0.5s; }
+
+        .daily-tip {
+            background: #fff8fb;
+            border-radius: var(--radius);
+            padding: 12px 16px;
+            margin: 10px 0;
+            border-left: 4px solid var(--pink);
+            font-size: 12px; color: #8b3a62;
+            font-style: italic; line-height: 1.4;
+        }
+
+        .pomodoro-box {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin: 10px 0;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        .pomodoro-timer {
+            font-size: 38px; font-weight: 900; color: var(--pink);
+            font-variant-numeric: tabular-nums; font-family: 'SF Mono', 'Menlo', monospace;
+            letter-spacing: 2px;
+        }
+        .pomodoro-label { font-size: 12px; color: var(--text-muted); margin: 4px 0 10px; }
+        .pomodoro-btns { display: flex; gap: 8px; justify-content: center; }
+        .pomodoro-btn {
+            padding: 10px 20px; border-radius: 20px; border: none;
+            font-family: var(--font); font-size: 14px; font-weight: 600;
+            cursor: pointer; pointer-events: auto;
+        }
+        .pomodoro-btn.start { background: var(--pink); color: white; }
+        .pomodoro-btn.reset { background: #f0e6f6; color: var(--text); }
+
+        .panther-bubble {
+            display: flex; align-items: flex-end; gap: 8px;
+            margin: 12px 0;
+        }
+        .panther-bubble .bubble-avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: linear-gradient(135deg, #e0218a, #ff6b9d);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; flex-shrink: 0;
+        }
+        .panther-bubble .bubble-text {
+            background: var(--surface);
+            border-radius: 16px 16px 16px 4px;
+            padding: 10px 14px;
+            font-size: 13px;
+            box-shadow: var(--shadow);
+            max-width: 280px;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+    </style>
+</head>
+<body id="mainBody">
+
+    <div id="toastContainer"></div>
+
+    <div class="modal-overlay hidden" id="modalOverlay" onclick="closeModal()">
+        <div class="modal-box" id="modalBox" onclick="event.stopPropagation()"></div>
+    </div>
+
+    <!-- TAB 1: HOME -->
+    <div class="tab-content active" id="tab-home">
+        <div class="app-header">
+            <div class="avatar-circle" id="avatarCircle" onclick="tapPanther()">🐆</div>
+            <input type="text" class="name-input" id="nameInput" placeholder="Студент-медик" onchange="saveName()">
+            <div class="header-badges">
+                <div class="badge"><span>❄️</span><span class="count" id="freezeCount">0</span></div>
+                <div class="badge"><span>🔥</span><span class="count" id="streakCount">0</span></div>
+            </div>
+        </div>
+
+        <div style="text-align:center; margin: 4px 0;">
+            <div style="font-size: 52px; font-weight: 900; color: var(--pink); line-height: 1;" id="bigStreak">0</div>
+            <div style="font-size: 14px; color: var(--text-muted);">дней без пропусков</div>
+        </div>
+
+        <div class="perfect-day-bar" id="perfectDayBar">
+            <span class="crown">⭐</span>
+            <span id="perfectDayText">Ещё 8 привычек до идеального дня</span>
+            <div class="perfect-day-fill"><div class="perfect-day-fill-inner" id="perfectDayFill" style="width:0%"></div></div>
+        </div>
+
+        <div class="card" style="padding:12px 14px;">
+            <div class="card-title" style="margin-bottom:8px;">Трекер недели</div>
+            <div class="week-tracker" id="weekTracker"></div>
+        </div>
+
+        <div class="ring-wrap"><canvas id="progressRing" width="170" height="170"></canvas></div>
+
+        <div class="mini-stats" id="miniStats">
+            <div class="stat-item"><span class="stat-dot done"></span> <span id="miniHabits">0/8</span> привычек</div>
+            <div class="stat-item">💧 <span id="miniWater">0</span> л</div>
+            <div class="stat-item">📖 <span id="miniPages">0</span> стр.</div>
+            <div class="stat-item">🧠 <span id="miniAnatomy">—</span></div>
+        </div>
+
+        <div class="quick-actions">
+            <button class="quick-btn" onclick="quickWater()"><span class="quick-icon">💧</span> +стакан</button>
+            <button class="quick-btn" onclick="switchTab('tab-habits')"><span class="quick-icon">📖</span> страницы</button>
+            <button class="quick-btn" onclick="switchTab('tab-habits')"><span class="quick-icon">✅</span> привычки</button>
+            <button class="quick-btn" onclick="startPomodoro()"><span class="quick-icon">🍅</span> 25 мин</button>
+        </div>
+
+        <div class="daily-tip" id="dailyTip">💡 Загрузка совета...</div>
+
+        <div class="pomodoro-box" id="pomodoroBox" style="display:none;">
+            <div class="pomodoro-timer" id="pomodoroTimer">25:00</div>
+            <div class="pomodoro-label" id="pomodoroStatus">Готов к фокусировке 🧠</div>
+            <div class="pomodoro-btns">
+                <button class="pomodoro-btn start" id="pomodoroStartBtn" onclick="togglePomodoro()">Старт 🍅</button>
+                <button class="pomodoro-btn reset" onclick="resetPomodoro()">Сброс</button>
+                <button class="pomodoro-btn reset" onclick="document.getElementById('pomodoroBox').style.display='none'">✕</button>
+            </div>
+        </div>
+
+        <!-- Мини-анатомия РАСКРЫВАЮЩАЯСЯ -->
+        <div class="anatomy-preview" id="anatomyPreview" onclick="toggleAnatomyExpand()" style="cursor:pointer;">
+            <span class="anatomy-icon">🧠</span>
+            <div class="anatomy-info">
+                <div class="anatomy-topic" id="anatomyTopicPreview">Тема дня</div>
+                <div class="anatomy-repeat" id="anatomyRepeatPreview">Повтор: —</div>
+            </div>
+            <span id="anatomyExpandArrow" style="color:var(--pink); font-size:18px; transition:transform 0.3s;">▶</span>
+        </div>
+        <div id="anatomyExpandable" style="display:none; background:var(--surface); border-radius:0 0 var(--radius) var(--radius); padding:0 16px 12px; margin-top:-8px; margin-bottom:10px; box-shadow:var(--shadow);">
+            <div id="anatomyDetailList"></div>
+        </div>
+
+        <div class="panther-bubble" onclick="tapPanther()">
+            <div class="bubble-avatar" id="bubbleAvatar">🐆</div>
+            <div class="bubble-text" id="pantherPhrase">Мяу? Ты сегодня что-то делала?</div>
+        </div>
+
+        <button class="btn-action" onclick="switchTab('tab-habits')">Начать день 💗</button>
+    </div>
+
+    <!-- TAB 2: HABITS -->
+    <div class="tab-content" id="tab-habits">
+        <div style="display:flex; justify-content:flex-end; margin-bottom:8px;">
+            <button style="background:var(--pink-light); border:none; padding:8px 14px; border-radius:16px; font-family:var(--font); font-size:13px; cursor:pointer; pointer-events:auto;" id="periodBtn" onclick="togglePeriod()">🩸 Месячные</button>
+        </div>
+        <div id="habitsList"></div>
+        <div style="text-align:center; margin:12px 0; font-weight:600; color:var(--text-muted);" id="habitsStatus"></div>
+    </div>
+
+    <!-- TAB 3: STATS -->
+    <div class="tab-content" id="tab-stats">
+        <div class="stats-grid" id="statsGrid"></div>
+        <div class="card">
+            <div class="card-title">Прогресс привычек</div>
+            <div id="habitProgressBars"></div>
+        </div>
+        <div class="card">
+            <div class="card-title">Тепловая карта</div>
+            <div class="heatmap-grid" id="heatmapGrid"></div>
+        </div>
+    </div>
+
+    <!-- TAB 4: REWARDS -->
+    <div class="tab-content" id="tab-rewards">
+        <div style="display:flex; gap:8px; margin-bottom:12px; justify-content:center;">
+            <button class="nav-btn active" id="subtab-achievements-btn" onclick="switchRewardSubtab('achievements')">🏆 Ачивки</button>
+            <button class="nav-btn" id="subtab-gifts-btn" onclick="switchRewardSubtab('gifts')">🎁 Подарки</button>
+            <button class="nav-btn" id="subtab-tdk-btn" onclick="switchRewardSubtab('tdk')">🕶 ТДК</button>
+        </div>
+        <div id="rewardsContent"></div>
+        <div style="display:flex; gap:8px; margin-top:16px; justify-content:center;">
+            <button class="btn-outline" onclick="exportData()" style="pointer-events:auto; cursor:pointer;">📥 Скачать</button>
+            <button class="btn-outline" onclick="document.getElementById('importFile').click()" style="pointer-events:auto; cursor:pointer;">📤 Загрузить</button>
+            <input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(event)">
+        </div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <div class="bottom-nav">
+        <button class="nav-btn active" id="nav-home" onclick="switchTab('tab-home')"><span class="nav-icon">🏠</span> Главная</button>
+        <button class="nav-btn" id="nav-habits" onclick="switchTab('tab-habits')"><span class="nav-icon">✅</span> Привычки</button>
+        <button class="nav-btn" id="nav-stats" onclick="switchTab('tab-stats')"><span class="nav-icon">📊</span> Статистика</button>
+        <button class="nav-btn" id="nav-rewards" onclick="switchTab('tab-rewards')"><span class="nav-icon">🏆</span> Награды</button>
+    </div>
+
+    <script>
+        // ============ CORE DATA ============
+        const STORAGE_KEY = 'pulse_final_v2';
+        const HABITS_TOTAL = 8;
+        const HABITS_TOTAL_SUNDAY = 7;
+
+        function getDefaultData() {
+            return {
+                name: 'Студент-медик',
+                habits: {},
+                streak: 0,
+                lastActiveDate: null,
+                totalFreezes: 3,
+                freezesUsed: {},
+                longestStreak: 0,
+                gifts: [],
+                lastGiftDate: null,
+                periodStart: null,
+                periodActive: false,
+                achievements: {},
+                waterCount: {},
+                readingPages: {},
+                cardioChoice: {},
+                skippedReels: {},
+                _lastFreezeWeek: null,
+                anatomyReviewed: {}
+            };
+        }
+
+        function loadData() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                let data = raw ? JSON.parse(raw) : getDefaultData();
+                const defaults = getDefaultData();
+                for (const key in defaults) {
+                    if (!(key in data) && key !== 'name') data[key] = defaults[key];
+                }
+                return data;
+            } catch (e) {
+                return getDefaultData();
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+        }
+
+        let appData = loadData();
+        let currentTab = 'tab-home';
+        let rewardSubtab = 'achievements';
+
+        function getTodayKey() {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        }
+
+        function getDateKey(date) {
+            return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+        }
+
+        function getTodayHabits() { return appData.habits[getTodayKey()] || []; }
+        function isHabitDone(habitId) { return getTodayHabits().includes(habitId); }
+
+        function toggleHabit(habitId) {
+            const key = getTodayKey();
+            if (!appData.habits[key]) appData.habits[key] = [];
+            const idx = appData.habits[key].indexOf(habitId);
+            if (idx >= 0) { appData.habits[key].splice(idx, 1); }
+            else { appData.habits[key].push(habitId); }
+            updateStreak();
+            checkPeriodEnd();
+            saveData();
+            renderAll();
+        }
+
+        function isSunday() { return new Date().getDay() === 0; }
+        function getTotalForToday() { return isSunday() ? HABITS_TOTAL_SUNDAY : HABITS_TOTAL; }
+
+        function updateStreak() {
+            const today = getTodayKey();
+            const yesterday = getDateKey(new Date(Date.now() - 86400000));
+            const todayDone = (appData.habits[today] || []).length;
+            const todayTotal = getTotalForToday();
+            const todayComplete = todayDone >= todayTotal;
+
+            if (todayDone === 0 && (appData.habits[yesterday] || []).length === 0) {
+                appData.streak = 0;
+                appData.lastActiveDate = null;
+            } else if (todayComplete) {
+                if (appData.lastActiveDate === yesterday || appData.lastActiveDate === today) {
+                    if (appData.lastActiveDate !== today) appData.streak += 1;
+                } else { appData.streak = 1; }
+                appData.lastActiveDate = today;
+                if (appData.streak > (appData.longestStreak || 0)) appData.longestStreak = appData.streak;
+            }
+            const weekNum = Math.floor(Date.now() / 604800000);
+            if (!appData._lastFreezeWeek) appData._lastFreezeWeek = weekNum;
+            if (weekNum > appData._lastFreezeWeek) {
+                appData.totalFreezes += 1;
+                appData._lastFreezeWeek = weekNum;
+            }
+            saveData();
+        }
+
+        function getSkipDays() {
+            let count = 0;
+            let d = new Date();
+            const today = getTodayKey();
+            if ((appData.habits[today] || []).length > 0) return 0;
+            for (let i = 0; i < 30; i++) {
+                const key = getDateKey(d);
+                if ((appData.habits[key] || []).length > 0) break;
+                count++;
+                d = new Date(d.getTime() - 86400000);
+            }
+            return count;
+        }
+
+        function getPantherMood() {
+            const skip = getSkipDays();
+            const todayDone = (appData.habits[getTodayKey()] || []).length;
+            const total = getTotalForToday();
+            const pct = total > 0 ? todayDone / total : 0;
+            if (pct >= 0.7) return 'success';
+            const hour = new Date().getHours();
+            if (hour < 10 && todayDone === 0 && skip === 0) return 'morning';
+            if (skip === 0 && todayDone === 0) return 'idle';
+            if (skip === 1) return 'light_skip';
+            if (skip === 2) return 'medium_skip';
+            if (skip === 3) return 'hard_skip';
+            return 'extreme_skip';
+        }
+
+        function getPantherPhrase() {
+            const mood = getPantherMood();
+            const phrases = {
+                idle: ['Чего ждём, студент? Нейроны сами не вырастут 💅', 'Пантера заждалась... Атлас открывать будем?', 'Я тут слежу за твоим прогрессом. И пока что это грустно 👀'],
+                success: ['Мур-р-р! Ты просто космос! Пантера гордится 🐆💗', 'Отлично! Ещё чуть-чуть и я начну мурлыкать гимн', 'Так держать, будущий врач! Пациенты будут в восторге'],
+                light_skip: ['Один день пропущен... Нейроны грустят 😿', 'Пантера нахмурилась. Давай возвращаться!', 'Ок, день отдыха — но завтра без отмазок!'],
+                medium_skip: ['Два дня! Ты серьёзно? Я начинаю переживать 🐆😐', 'Так, включаем режим обеспокоенной Пантеры', 'Ну-ка, поднимайся! Хотя бы анатомию повтори'],
+                hard_skip: ['ТРИ ДНЯ ПРОПУСКА! Пантера в ярости 🐆😤', 'Я скоро начну звонить твоему декану!', 'Всё, завтра в 6 утра подъём. Я проверю.'],
+                extreme_skip: ['ЧЕТЫРЕ ДНЯ!!! ЗВОНЮ ДЕКАНУ 🐆💢☎️', 'Пантера переходит на тёмную сторону. Возвращайся!', 'Ты вообще жива? Отзовись! Или хотя бы выпей воды'],
+                morning: ['Доброе утро, соня! Пора покорять анатомию ☀️', 'Кофе? Чай? Анатомия? Пантера уже на посту!'],
+            };
+            const arr = phrases[mood] || phrases.idle;
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function getPantherEmoji() {
+            const skip = getSkipDays();
+            if (skip === 0) return '🐆';
+            if (skip === 1) return '🐆🙄';
+            if (skip === 2) return '🐆😐';
+            if (skip === 3) return '🐆😤';
+            return '🐆💢';
+        }
+
+        function getBodyBg() {
+            const skip = getSkipDays();
+            if (skip >= 4) return '#ffccd5';
+            if (skip >= 3) return '#ffe0ea';
+            if (skip >= 2) return '#fff0f5';
+            if (skip >= 1) return '#fff5f8';
+            return '#faf8fc';
+        }
+
+        // ============ ANATOMY SCHEDULE ============
+        var ANATOMY_SCHEDULE = {
+            '2026-05-01': 'Ротовая полость, зубы, лицо',
+            '2026-05-02': 'Язык, слюнные железы, глотка',
+            '2026-05-03': 'Пищевод и желудок',
+            '2026-05-04': 'Тонкая кишка и ДПК',
+            '2026-05-05': 'Толстая кишка (вся)',
+            '2026-05-06': 'Печень и желчные пути',
+            '2026-05-07': 'Поджелудочная и брюшина',
+            '2026-05-08': 'Гортань',
+            '2026-05-09': 'Нос, пазухи, трахея, бронхи',
+            '2026-05-10': 'Лёгкие',
+            '2026-05-11': 'Мочевая система',
+            '2026-05-12': 'Половая система',
+            '2026-05-13': 'Сердце: камеры, клапаны, перикард',
+            '2026-05-14': 'Проводящая система и сосуды сердца',
+            '2026-05-15': 'Аорта и дуга',
+            '2026-05-16': 'Сонные артерии',
+            '2026-05-17': 'Подключичная → артерии руки',
+            '2026-05-18': 'Грудная и брюшная аорта',
+            '2026-05-19': 'Артерии таза и ноги',
+            '2026-05-20': 'Венозная система (вся) + воротная вена',
+            '2026-05-21': 'Гипофиз, эпифиз, гипоталамус',
+            '2026-05-22': 'Щитовидная, паращитовидные, тимус',
+            '2026-05-23': 'Надпочечники, эндокринная часть ПЖ и гонад',
+            '2026-05-24': 'Лимфатическая система (вся)',
+            '2026-05-25': '⚡ ТОЛЬКО БИЛЕТЫ'
+        };
+
+        function getAnatomyTopicByDate(date) {
+            var key = getDateKey(date);
+            if (ANATOMY_SCHEDULE[key]) return ANATOMY_SCHEDULE[key];
+            if (date < new Date(2026, 4, 1)) return null;
+            return '⚡ ТОЛЬКО БИЛЕТЫ';
+        }
+
+        function getAnatomyReviewList() {
+            var today = new Date();
+            var list = [];
+            var newTopic = getAnatomyTopicByDate(today);
+            if (newTopic) list.push({ label: '🆕 Новая тема', topic: newTopic, day: 'сегодня' });
+            var offsets = [-1, -3, -7];
+            var dayNames = ['вчера', '3 дня назад', '7 дней назад'];
+            for (var i = 0; i < offsets.length; i++) {
+                var d = new Date(today.getTime() + offsets[i] * 86400000);
+                var topic = getAnatomyTopicByDate(d);
+                if (topic) list.push({ label: '🔄 Повтор (' + dayNames[i] + ')', topic: topic, day: getDateKey(d) });
+            }
+            return list;
+        }
+
+        function buildAnatomyExpandable() {
+            var list = getAnatomyReviewList();
+            var topicEl = document.getElementById('anatomyTopicPreview');
+            var repeatEl = document.getElementById('anatomyRepeatPreview');
+            if (topicEl && list.length > 0) topicEl.textContent = '🧠 ' + list[0].topic;
+            if (repeatEl) {
+                var repeats = list.filter(function(item) { return item.label.indexOf('Повтор') === 0; });
+                repeatEl.textContent = repeats.length > 0 ? 'Повтор: ' + repeats.map(function(r) { return r.topic; }).join(' • ') : 'Нет тем для повторения';
+            }
+            var listContainer = document.getElementById('anatomyDetailList');
+            if (listContainer) {
+                var html = '';
+                if (list.length === 0) {
+                    html = '<div style="padding:12px; color:var(--text-muted); font-size:13px;">⚡ Сегодня только работа по билетам. Повторяй слабые места.</div>';
+                } else {
+                    var key = getTodayKey();
+                    var reviewed = (appData.anatomyReviewed && appData.anatomyReviewed[key]) ? appData.anatomyReviewed[key] : [];
+                    for (var j = 0; j < list.length; j++) {
+                        var item = list[j];
+                        var isDone = reviewed.indexOf(item.topic) >= 0;
+                        html += '<div style="display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); font-size:13px; cursor:pointer;" onclick="toggleAnatomyReview(\'' + item.topic.replace(/'/g, "\\'") + '\')">';
+                        html += '<span style="font-size:10px; color:var(--text-muted); min-width:28px;">' + (isDone ? '✅' : '⬜') + '</span>';
+                        html += '<span style="font-weight:600; min-width:70px;">' + item.label + '</span>';
+                        html += '<span style="flex:1; ' + (isDone ? 'text-decoration:line-through; color:var(--text-muted);' : '') + '">' + item.topic + '</span>';
+                        html += '</div>';
+                    }
+                }
+                listContainer.innerHTML = html;
+            }
+        }
+
+        function toggleAnatomyReview(topic) {
+            var key = getTodayKey();
+            if (!appData.anatomyReviewed) appData.anatomyReviewed = {};
+            if (!appData.anatomyReviewed[key]) appData.anatomyReviewed[key] = [];
+            var idx = appData.anatomyReviewed[key].indexOf(topic);
+            if (idx >= 0) { appData.anatomyReviewed[key].splice(idx, 1); }
+            else { appData.anatomyReviewed[key].push(topic); }
+            var list = getAnatomyReviewList();
+            var allReviewed = true;
+            for (var i = 0; i < list.length; i++) {
+                if (appData.anatomyReviewed[key].indexOf(list[i].topic) < 0) { allReviewed = false; break; }
+            }
+            if (allReviewed && list.length > 0) { if (!isHabitDone('anatomy')) toggleHabit('anatomy'); }
+            saveData();
+            buildAnatomyExpandable();
+            renderRing();
+            updateMainPageWidgets();
+        }
+
+        function toggleAnatomyExpand() {
+            var block = document.getElementById('anatomyExpandable');
+            var arrow = document.getElementById('anatomyExpandArrow');
+            if (block.style.display === 'none') {
+                block.style.display = 'block';
+                arrow.style.transform = 'rotate(90deg)';
+                buildAnatomyExpandable();
+            } else {
+                block.style.display = 'none';
+                arrow.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // ============ RENDER ============
+        function renderAll() {
+            document.body.style.background = getBodyBg();
+            document.getElementById('streakCount').textContent = appData.streak;
+            document.getElementById('bigStreak').textContent = appData.streak;
+            document.getElementById('freezeCount').textContent = appData.totalFreezes;
+            document.getElementById('nameInput').value = appData.name;
+            document.getElementById('avatarCircle').textContent = getPantherEmoji().split(' ')[0] || '🐆';
+            document.getElementById('pantherPhrase').textContent = getPantherPhrase();
+            var bbl = document.getElementById('bubbleAvatar');
+            if (bbl) bbl.textContent = getPantherEmoji().split(' ')[0] || '🐆';
+            renderWeekTracker();
+            renderRing();
+            updateMainPageWidgets();
+            buildAnatomyExpandable();
+            updateDailyTip();
+            renderHabitsList();
+            renderHabitsStatus();
+            renderStats();
+            renderRewards();
+            if (document.getElementById('pomodoroBox') && document.getElementById('pomodoroBox').style.display === 'block') {
+                updatePomodoroDisplay();
+            }
+            document.getElementById('periodBtn').textContent = appData.periodActive ? '🩸 Месячные (активны)' : '🩸 Месячные';
+        }
+
+        function renderWeekTracker() {
+            const container = document.getElementById('weekTracker');
+            const today = new Date();
+            const dayOfWeek = today.getDay();
+            const monday = new Date(today);
+            monday.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+            const dayNames = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+            let html = '';
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(monday);
+                d.setDate(monday.getDate() + i);
+                const key = getDateKey(d);
+                const done = (appData.habits[key] || []).length;
+                const total = d.getDay() === 0 ? HABITS_TOTAL_SUNDAY : HABITS_TOTAL;
+                const isToday = getDateKey(d) === getTodayKey();
+                const isFuture = d > today;
+                let cls = '';
+                if (isFuture) cls = 'future';
+                else if (done >= total) cls = 'completed';
+                else if (done > 0) cls = 'partial';
+                else cls = 'missed';
+                if (isToday && !isFuture) cls += ' today';
+                html += `<div class="week-day ${cls}" onclick="switchTab('tab-habits')"><span class="day-label">${dayNames[i]}</span><span class="day-num">${d.getDate()}</span></div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        function renderRing() {
+            const canvas = document.getElementById('progressRing');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const cx = 85, cy = 85, r = 72, lw = 14;
+            ctx.clearRect(0, 0, 170, 170);
+            ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2);
+            ctx.strokeStyle = '#f0e6f6'; ctx.lineWidth = lw; ctx.stroke();
+            const done = getTodayHabits();
+            const total = getTotalForToday();
+            const pct = total > 0 ? done.length / total : 0;
+            const categories = [
+                { id: 'study', color: '#e0218a', habits: ['anatomy'] },
+                { id: 'body', color: '#f5a623', habits: ['workout','cardio','walk'] },
+                { id: 'resource', color: '#2ecc71', habits: ['water','reading','noreels'] },
+                { id: 'recovery', color: '#7c5ce7', habits: ['stretch'] },
+            ];
+            let angle = -Math.PI/2;
+            categories.forEach(cat => {
+                const catHabits = cat.habits.filter(h => {
+                    if (h === 'cardio' && !['Среда','Суббота'].includes(getRussianDay())) return false;
+                    if (h === 'walk' && ['Среда','Суббота'].includes(getRussianDay())) return false;
+                    return true;
+                });
+                const catDone = catHabits.filter(h => done.includes(h)).length;
+                const catSlice = catHabits.length > 0 ? (catDone / total) * Math.PI * 2 : 0;
+                if (catSlice > 0.005) {
+                    ctx.beginPath(); ctx.arc(cx, cy, r, angle, angle + catSlice);
+                    ctx.strokeStyle = cat.color; ctx.lineWidth = lw; ctx.lineCap = 'round'; ctx.stroke();
+                }
+                angle += (catHabits.length / total) * Math.PI * 2;
+            });
+            document.getElementById('bigStreak').textContent = Math.round(pct * 100) + '%';
+        }
+
+        function getRussianDay() {
+            const days = ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
+            return days[new Date().getDay()];
+        }
+
+        function getWorkoutForToday() {
+            const d = getRussianDay();
+            const map = {
+                'Понедельник': 'Ноги + ягодицы (30 мин)',
+                'Вторник': 'Руки + плечи + спина (25 мин)',
+                'Среда': 'Кардио на выбор (30-40 мин)',
+                'Четверг': 'Ягодицы + задняя поверхность (30 мин)',
+                'Пятница': 'Всё тело + пресс (25 мин)',
+                'Суббота': 'Долгая прогулка или бассейн (50-60 мин)',
+                'Воскресенье': 'Полный отдых 💤',
+            };
+            if (appData.periodActive) {
+                const periodDay = getPeriodDay();
+                if (periodDay <= 2) return 'Прогулка + лёгкая растяжка (20 мин)';
+                if (periodDay <= 4) return 'Прогулка + ягодичный мостик 3×15 (25 мин)';
+                if (periodDay <= 6) return 'Облегчённая программа (15-20 мин)';
+                return map[d] || 'Программа дня';
+            }
+            return map[d] || 'Программа дня';
+        }
+
+        function getPeriodDay() {
+            if (!appData.periodStart) return 8;
+            return Math.floor((Date.now() - appData.periodStart) / 86400000) + 1;
+        }
+
+        function togglePeriod() {
+            if (appData.periodActive) { appData.periodActive = false; appData.periodStart = null; }
+            else { if (confirm('Включить режим месячных на 7 дней? 🩸')) { appData.periodActive = true; appData.periodStart = Date.now(); } }
+            saveData(); renderAll();
+        }
+
+        function checkPeriodEnd() {
+            if (appData.periodActive && getPeriodDay() > 8) { appData.periodActive = false; appData.periodStart = null; }
+        }
+
+        function renderHabitsList() {
+            const container = document.getElementById('habitsList');
+            const done = getTodayHabits();
+            const day = getRussianDay();
+            const isSun = day === 'Воскресенье';
+            const isCardioDay = ['Среда','Суббота'].includes(day);
+            const isWalkDay = !isCardioDay && !isSun;
+            const waterCount = appData.waterCount[getTodayKey()] || 0;
+            const readingPages = appData.readingPages[getTodayKey()] || 0;
+
+            const habits = [
+                { id: 'anatomy', icon: '🧠', name: 'Анатомия', detail: `Тема: ${getAnatomyTopicByDate(new Date())}` + (getAnatomyReviewList().length > 1 ? ` | Повтор: ${getAnatomyReviewList().slice(1).map(r=>r.topic).join(', ')}` : ''), always: true },
+                { id: 'workout', icon: '🏋️', name: 'Тренировка', detail: getWorkoutForToday(), always: true },
+                { id: 'water', icon: '💧', name: 'Вода', detail: `${waterCount}/8 стаканов [ - ] [ + ]`, always: true, isWater: true },
+                { id: 'reading', icon: '📖', name: 'Чтение', detail: `${readingPages} стр. (нужно ≥20)`, always: true },
+                { id: 'noreels', icon: '🚫', name: 'Без коротких видео', detail: appData.skippedReels[getTodayKey()] ? 'Сорвалась 😔 (нажми чтобы вернуть)' : 'Сегодня без Reels/Shorts/TikTok', always: true },
+                { id: 'cardio', icon: '🏃', name: 'Кардио', detail: isCardioDay ? 'Выбери вариант и нажми для выполнения' : (isSun ? 'Сегодня без кардио' : 'Сегодня без кардио'), onlyOn: isCardioDay },
+                { id: 'walk', icon: '🚶', name: 'Прогулка', detail: isSun ? 'Необязательно' : (isWalkDay ? 'Активность на свежем воздухе' : 'Сегодня кардио вместо прогулки'), onlyOn: isWalkDay || isSun, optional: isSun },
+                { id: 'stretch', icon: '🧘', name: 'Растяжка / Отдых', detail: isSun ? 'Полный отдых — разрешено всё, что не вредит' : 'Растяжка 5-10 мин', always: true, autoComplete: isSun },
+            ];
+
+            let html = '';
+            habits.forEach(h => {
+                if (h.onlyOn === false) return;
+                const isDone = done.includes(h.id) || (h.autoComplete && isSun);
+                html += `<div class="habit-card ${isDone ? 'completed' : ''}" id="habit-${h.id}"
+                    onclick="handleHabitClick('${h.id}')"
+                    oncontextmenu="event.preventDefault(); showFreezeModal('${h.id}')"
+                    ontouchend="handleLongPress(event, '${h.id}')">
+                    <span class="habit-icon">${h.icon}</span>
+                    <div class="habit-info"><div class="habit-name">${h.name}</div><div class="habit-detail">${h.detail}</div>
+                    ${h.isWater ? `<div style="margin-top:6px; display:flex; gap:8px;">
+                        <button onclick="event.stopPropagation(); changeWater(-1)" style="background:var(--bg); border:none; border-radius:14px; padding:4px 12px; font-size:16px; cursor:pointer; pointer-events:auto;">−</button>
+                        <button onclick="event.stopPropagation(); changeWater(1)" style="background:var(--bg); border:none; border-radius:14px; padding:4px 12px; font-size:16px; cursor:pointer; pointer-events:auto;">+</button>
+                    </div>` : ''}</div>
+                    <div class="check-circle"></div></div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        let longPressTimer;
+        function handleLongPress(e, habitId) { e.preventDefault(); clearTimeout(longPressTimer); longPressTimer = setTimeout(() => showFreezeModal(habitId), 600); }
+        document.addEventListener('touchend', () => clearTimeout(longPressTimer));
+        document.addEventListener('touchmove', () => clearTimeout(longPressTimer));
+
+        function handleHabitClick(habitId) {
+            if (habitId === 'cardio') { if (['Среда','Суббота'].includes(getRussianDay())) showCardioModal(); return; }
+            if (habitId === 'water') return;
+            if (habitId === 'reading') {
+                const pages = prompt('Сколько страниц прочитано сегодня?', appData.readingPages[getTodayKey()] || 0);
+                if (pages !== null) { appData.readingPages[getTodayKey()] = parseInt(pages) || 0; saveData(); updateReadingHabit(); }
+                return;
+            }
+            if (habitId === 'noreels') { if (appData.skippedReels[getTodayKey()]) delete appData.skippedReels[getTodayKey()]; toggleHabit(habitId); return; }
+            toggleHabit(habitId);
+        }
+
+        function changeWater(delta) {
+            const key = getTodayKey();
+            const current = appData.waterCount[key] || 0;
+            const newVal = Math.max(0, Math.min(8, current + delta));
+            appData.waterCount[key] = newVal;
+            if (newVal >= 8) { if (!isHabitDone('water')) toggleHabit('water'); }
+            else { if (isHabitDone('water')) toggleHabit('water'); }
+            saveData(); renderHabitsList(); renderRing(); updateMainPageWidgets();
+        }
+
+        function updateReadingHabit() {
+            const pages = appData.readingPages[getTodayKey()] || 0;
+            if (pages >= 20) { if (!isHabitDone('reading')) toggleHabit('reading'); }
+            else { if (isHabitDone('reading')) toggleHabit('reading'); }
+            renderHabitsList(); renderRing(); updateMainPageWidgets();
+        }
+
+        function showCardioModal() {
+            const options = ['Ходьба 40 мин', 'Плавание 30 мин', 'Танцы 30 мин', 'Лёгкая йога 30 мин', 'Велосипед 8-10 км'];
+            const current = appData.cardioChoice[getTodayKey()] || '';
+            document.getElementById('modalBox').innerHTML = `<h3>🏃 Выбери кардио</h3>${options.map(o => `<button class="btn ${current===o?'btn-pink':'btn-outline'}" onclick="selectCardio('${o}')">${o}</button>`).join('')}<br><button class="btn btn-outline" onclick="closeModal()">Отмена</button>`;
+            document.getElementById('modalOverlay').classList.remove('hidden');
+        }
+
+        function selectCardio(option) {
+            appData.cardioChoice[getTodayKey()] = option;
+            if (!isHabitDone('cardio')) toggleHabit('cardio');
+            saveData(); closeModal(); renderHabitsList(); renderRing(); updateMainPageWidgets();
+        }
+
+        function showFreezeModal(habitId) {
+            if (isHabitDone(habitId)) return;
+            if (appData.totalFreezes <= 0) { showToast('❄️ Нет заморозок! Они восстанавливаются раз в неделю.'); return; }
+            document.getElementById('modalBox').innerHTML = `<h3>❄️ Заморозить привычку?</h3><p style="font-size:13px; color:var(--text-muted);">Будет засчитана как выполненная. Останется заморозок: ${appData.totalFreezes - 1}</p><button class="btn btn-pink" onclick="confirmFreeze('${habitId}')">Заморозить</button><button class="btn btn-outline" onclick="closeModal()">Отмена</button>`;
+            document.getElementById('modalOverlay').classList.remove('hidden');
+        }
+
+        function confirmFreeze(habitId) {
+            if (appData.totalFreezes <= 0) return;
+            appData.totalFreezes -= 1;
+            appData.freezesUsed[getTodayKey()] = (appData.freezesUsed[getTodayKey()] || 0) + 1;
+            if (!isHabitDone(habitId)) toggleHabit(habitId);
+            saveData(); closeModal(); renderAll(); showToast('❄️ Привычка заморожена!');
+        }
+
+        function closeModal() { document.getElementById('modalOverlay').classList.add('hidden'); }
+
+        function renderHabitsStatus() {
+            const done = getTodayHabits().length;
+            const total = getTotalForToday();
+            const el = document.getElementById('habitsStatus');
+            el.textContent = done >= total ? '🎉 Всё сделано! Пантера гордится!' : `Осталось ${total - done} из ${total} задач`;
+        }
+
+        function renderStats() {
+            const today = new Date();
+            const month = today.getMonth();
+            const year = today.getFullYear();
+            let activeDays = 0, perfectDays = 0;
+            for (let d = 1; d <= new Date(year, month+1, 0).getDate(); d++) {
+                const key = getDateKey(new Date(year, month, d));
+                const done = (appData.habits[key] || []).length;
+                const total = new Date(year, month, d).getDay() === 0 ? HABITS_TOTAL_SUNDAY : HABITS_TOTAL;
+                if (done > 0) activeDays++;
+                if (done >= total) perfectDays++;
+            }
+            const totemOrgans = ['🫀 Сердце','🧠 Мозг','🫁 Лёгкие','🦷 Зубы','💪 Мышцы'];
+            const totem = totemOrgans[Math.floor(Date.now() / 604800000) % totemOrgans.length];
+            document.getElementById('statsGrid').innerHTML = `
+                <div class="stat-card"><div class="stat-num">${activeDays}</div><div class="stat-label">активных дней за месяц</div></div>
+                <div class="stat-card"><div class="stat-num">${perfectDays}</div><div class="stat-label">идеальных дней</div></div>
+                <div class="stat-card"><div class="stat-num">${appData.longestStreak||0}</div><div class="stat-label">лучшая серия</div></div>
+                <div class="stat-card"><div class="stat-num" style="font-size:20px;">${totem}</div><div class="stat-label">тотемный орган недели</div></div>`;
+            const habitNames = [
+                { id: 'anatomy', name: '🧠 Анатомия' }, { id: 'workout', name: '🏋️ Тренировка' },
+                { id: 'water', name: '💧 Вода' }, { id: 'reading', name: '📖 Чтение' },
+                { id: 'noreels', name: '🚫 Без Reels' }, { id: 'cardio', name: '🏃 Кардио' },
+                { id: 'walk', name: '🚶 Прогулка' }, { id: 'stretch', name: '🧘 Растяжка' },
+            ];
+            let barsHtml = '';
+            habitNames.forEach(h => {
+                let doneCount = 0, possibleDays = 0;
+                for (let d = 1; d <= new Date(year, month+1, 0).getDate(); d++) {
+                    const key = getDateKey(new Date(year, month, d));
+                    const dw = new Date(year, month, d).getDay();
+                    if (h.id === 'cardio' && dw !== 3 && dw !== 6) continue;
+                    if (h.id === 'walk' && (dw === 3 || dw === 6)) continue;
+                    possibleDays++;
+                    if ((appData.habits[key] || []).includes(h.id)) doneCount++;
+                }
+                const pct = possibleDays > 0 ? Math.round(doneCount/possibleDays*100) : 0;
+                barsHtml += `<div style="font-size:12px; margin-top:8px;">${h.name} — ${pct}%</div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${pct}%"></div></div>`;
+            });
+            document.getElementById('habitProgressBars').innerHTML = barsHtml;
+            let heatmapHtml = '';
+            for (let d = 1; d <= new Date(year, month+1, 0).getDate(); d++) {
+                const key = getDateKey(new Date(year, month, d));
+                const count = (appData.habits[key] || []).length;
+                const total = new Date(year, month, d).getDay() === 0 ? HABITS_TOTAL_SUNDAY : HABITS_TOTAL;
+                const pct = total > 0 ? count/total : 0;
+                let lvl = '';
+                if (pct >= 1) lvl = 'l4'; else if (pct >= 0.7) lvl = 'l3'; else if (pct >= 0.4) lvl = 'l2'; else if (pct > 0) lvl = 'l1';
+                heatmapHtml += `<div class="heatmap-cell ${lvl}" title="${key}: ${count}/${total}">${d}</div>`;
+            }
+            document.getElementById('heatmapGrid').innerHTML = heatmapHtml;
+        }
+
+        function renderRewards() {
+            const content = document.getElementById('rewardsContent');
+            if (rewardSubtab === 'achievements') {
+                const achievements = [
+                    { id: 'first_day', icon: '🌸', name: 'Розовый дебют', desc: 'Первый день с выполненными привычками', check: () => Object.values(appData.habits).some(arr => arr.length > 0) },
+                    { id: 'teeth', icon: '🦷', name: 'Зубная фея', desc: '7 дней анатомии подряд', check: () => checkStreakForHabit('anatomy', 7) },
+                    { id: 'heart', icon: '💗', name: 'Сердце красавицы', desc: '5 идеальных дней', check: () => countPerfectDays() >= 5 },
+                    { id: 'abs', icon: '🏋️', name: 'Стальной пресс', desc: '10 тренировок за месяц', check: () => countHabitMonth('workout') >= 10 },
+                    { id: 'waterfall', icon: '🌊', name: 'Водопад', desc: '7 дней воды 8/8', check: () => countWaterPerfectDays() >= 7 },
+                    { id: 'bookworm', icon: '🐛', name: 'Книжный червь', desc: '100 страниц за неделю', check: () => getWeeklyPages() >= 100 },
+                    { id: 'noreels', icon: '🔓', name: 'Свобода от Reels', desc: '5 дней без коротких видео', check: () => countHabitMonth('noreels') >= 5 },
+                    { id: 'streak7', icon: '🔥', name: 'Пантера в огне', desc: 'Серия 7 дней', check: () => appData.streak >= 7 },
+                    { id: 'anatomy30', icon: '🦴', name: 'Костяной король', desc: '30 дней анатомии', check: () => countHabitEver('anatomy') >= 30 },
+                    { id: 'streak30', icon: '🎷', name: 'Саксофон мести', desc: 'Серия 30 дней', check: () => appData.longestStreak >= 30 },
+                    { id: 'favorite', icon: '🐆', name: 'Любимчик Пантеры', desc: '50 идеальных дней', check: () => countPerfectDaysEver() >= 50 },
+                ];
+                let html = '<div class="achieve-grid">';
+                achievements.forEach(a => {
+                    if (a.check()) appData.achievements[a.id] = true;
+                    const locked = !appData.achievements[a.id];
+                    html += `<div class="achieve-card ${locked ? 'locked' : ''}"><div class="achieve-icon">${locked ? '🔒' : a.icon}</div><div class="achieve-name">${locked ? '???' : a.name}</div><div class="achieve-desc">${a.desc}</div></div>`;
+                });
+                html += '</div>'; content.innerHTML = html;
+            } else if (rewardSubtab === 'gifts') {
+                const giftTypes = ['🩺 стетоскоп', '🦷 зуб мудрости', '🧠 запасная извилина', '💗 сердечко', '💊 таблетка от прокрастинации', '🎷 мини-саксофон'];
+                if (!appData.gifts) appData.gifts = [];
+                let html = `<div style="font-size:14px; margin-bottom:8px;">🎁 Подарки от Пантеры (${appData.gifts.length} шт.)</div>`;
+                if (appData.gifts.length === 0) html += '<p style="color:var(--text-muted);">Пока подарков нет. Заходи каждый день!</p>';
+                else {
+                    html += '<div style="display:flex; flex-wrap:wrap; gap:6px;">';
+                    appData.gifts.forEach(g => { html += `<span style="background:var(--surface); border-radius:20px; padding:6px 12px; font-size:14px; box-shadow:var(--shadow);">${giftTypes[g] || '🎁 подарок'}</span>`; });
+                    html += '</div>';
+                }
+                content.innerHTML = html;
+            } else if (rewardSubtab === 'tdk') {
+                let html = '<div class="card-title">🕶 Тёмные Делишки Карьеры</div>';
+                const missedDays = getMissedDaysList();
+                if (missedDays.length === 0) html += '<p style="color:var(--text-muted);">Чисто! Ни одного пропуска. Пантера спокойна.</p>';
+                else missedDays.forEach(day => { html += `<div style="background:var(--surface); border-radius:12px; padding:10px; margin-bottom:6px; font-size:13px; box-shadow:var(--shadow);">📅 ${day.date}: пропущено ${day.missed} привычек — ${day.comment}</div>`; });
+                content.innerHTML = html;
+            }
+            saveData();
+        }
+
+        function getMissedDaysList() {
+            const list = [];
+            const today = new Date();
+            for (let i = 0; i < 60; i++) {
+                const d = new Date(today - i*86400000);
+                const key = getDateKey(d);
+                const done = (appData.habits[key] || []).length;
+                const total = d.getDay() === 0 ? HABITS_TOTAL_SUNDAY : HABITS_TOTAL;
+                if (done < total && done > 0) list.push({ date: key, missed: total - done, comment: ['Пантера заметила 👀','Ну ничего, бывает','Анатомия плачет','Декан пока не знает','Тук-тук, это совесть'][Math.floor(Math.random()*5)] });
+            }
+            return list.slice(0, 10);
+        }
+
+        function checkStreakForHabit(habitId, days) { let streak = 0, maxStreak = 0; for (let i = 0; i < 90; i++) { const d = new Date(Date.now() - i*86400000); const key = getDateKey(d); if ((appData.habits[key] || []).includes(habitId)) { streak++; maxStreak = Math.max(maxStreak, streak); } else streak = 0; } return maxStreak >= days; }
+        function countPerfectDays() { let count = 0; const today = new Date(); for (let i = 0; i < 30; i++) { const d = new Date(today - i*86400000); const key = getDateKey(d); const done = (appData.habits[key] || []).length; const total = d.getDay() === 0 ? HABITS_TOTAL_SUNDAY : HABITS_TOTAL; if (done >= total) count++; } return count; }
+        function countPerfectDaysEver() { let count = 0; for (const key in appData.habits) { const [y,m,day] = key.split('-').map(Number); const d = new Date(y, m-1, day); const done = (appData.habits[key] || []).length; const total = d.getDay() === 0 ? HABITS_TOTAL_SUNDAY : HABITS_TOTAL; if (done >= total) count++; } return count; }
+        function countHabitMonth(habitId) { let count = 0; const today = new Date(); const month = today.getMonth(), year = today.getFullYear(); for (let d = 1; d <= new Date(year, month+1, 0).getDate(); d++) { if ((appData.habits[getDateKey(new Date(year, month, d))] || []).includes(habitId)) count++; } return count; }
+        function countHabitEver(habitId) { let count = 0; for (const key in appData.habits) { if ((appData.habits[key] || []).includes(habitId)) count++; } return count; }
+        function countWaterPerfectDays() { let count = 0; for (const key in appData.waterCount) { if (appData.waterCount[key] >= 8) count++; } return count; }
+        function getWeeklyPages() { let pages = 0; for (let i = 0; i < 7; i++) { pages += appData.readingPages[getDateKey(new Date(Date.now() - i*86400000))] || 0; } return pages; }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            const tabEl = document.getElementById(tabName);
+            if (tabEl) tabEl.classList.add('active');
+            const navBtn = document.getElementById('nav-' + tabName.replace('tab-', ''));
+            if (navBtn) navBtn.classList.add('active');
+            currentTab = tabName;
+            if (tabName === 'tab-home') renderRing();
+            renderAll();
+        }
+
+        function switchRewardSubtab(sub) {
+            rewardSubtab = sub;
+            document.querySelectorAll('[id^="subtab-"]').forEach(el => el.classList.remove('active'));
+            const btn = document.getElementById('subtab-' + sub + '-btn');
+            if (btn) btn.classList.add('active');
+            renderRewards();
+        }
+
+        function tapPanther() {
+            const phrase = getPantherPhrase();
+            document.getElementById('pantherPhrase').textContent = phrase;
+            document.getElementById('avatarCircle').textContent = getPantherEmoji().split(' ')[0] || '🐆';
+            const bbl = document.getElementById('bubbleAvatar');
+            if (bbl) bbl.textContent = getPantherEmoji().split(' ')[0] || '🐆';
+            showToast(phrase);
+        }
+
+        function saveName() {
+            appData.name = document.getElementById('nameInput').value || 'Студент-медик';
+            localStorage.setItem('pulse_final_v2_name', appData.name);
+            saveData();
+        }
+
+        function showToast(msg) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = msg;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+        }
+
+        function checkDailyGift() {
+            const today = getTodayKey();
+            if (appData.lastGiftDate === today) return;
+            appData.lastGiftDate = today;
+            if (!appData.gifts) appData.gifts = [];
+            const giftIndex = Math.floor(Math.random() * 6);
+            appData.gifts.push(giftIndex);
+            saveData();
+            setTimeout(() => {
+                const giftNames = ['🩺 стетоскоп', '🦷 зуб мудрости', '🧠 запасная извилина', '💗 сердечко', '💊 таблетка от прокрастинации', '🎷 мини-саксофон'];
+                showToast('🎁 Пантера дарит: ' + giftNames[giftIndex] + '!');
+            }, 1500);
+        }
+
+        function exportData() {
+            const blob = new Blob([JSON.stringify(appData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'panther_pulse_backup.json'; a.click();
+            URL.revokeObjectURL(url);
+            showToast('📥 Данные скачаны!');
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    appData = { ...getDefaultData(), ...data };
+                    saveData(); renderAll(); showToast('📤 Данные загружены!');
+                } catch (err) { showToast('❌ Ошибка в файле'); }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        function quickWater() {
+            const key = getTodayKey();
+            const current = appData.waterCount[key] || 0;
+            if (current < 8) {
+                appData.waterCount[key] = current + 1;
+                if (appData.waterCount[key] >= 8 && !isHabitDone('water')) toggleHabit('water');
+                saveData(); updateMainPageWidgets();
+                showToast('💧 +1 стакан! Всего: ' + appData.waterCount[key] + '/8');
+            } else { showToast('💧 Ты уже выпила норму! Пантера гордится'); }
+        }
+
+        function updatePerfectDayBar() {
+            const done = getTodayHabits().length;
+            const total = getTotalForToday();
+            const left = total - done;
+            const pct = total > 0 ? Math.round(done / total * 100) : 0;
+            const textEl = document.getElementById('perfectDayText');
+            const fillEl = document.getElementById('perfectDayFill');
+            if (textEl) textEl.textContent = done >= total ? '🎉 Идеальный день! Пантера мурлычет!' : `Ещё ${left} ${declineHabit(left)} до идеального дня ⭐️`;
+            if (fillEl) fillEl.style.width = pct + '%';
+        }
+
+        function declineHabit(n) {
+            if (n % 10 === 1 && n % 100 !== 11) return 'привычка';
+            if ([2,3,4].includes(n % 10) && ![12,13,14].includes(n % 100)) return 'привычки';
+            return 'привычек';
+        }
+
+        function updateMiniStats() {
+            const done = getTodayHabits().length;
+            const total = getTotalForToday();
+            const key = getTodayKey();
+            const water = appData.waterCount[key] || 0;
+            const pages = appData.readingPages[key] || 0;
+            const topic = getAnatomyTopicByDate(new Date()) || '—';
+            const habitsEl = document.getElementById('miniHabits');
+            const waterEl = document.getElementById('miniWater');
+            const pagesEl = document.getElementById('miniPages');
+            const anatomyEl = document.getElementById('miniAnatomy');
+            if (habitsEl) habitsEl.textContent = done + '/' + total;
+            if (waterEl) waterEl.textContent = (water * 0.25).toFixed(1);
+            if (pagesEl) pagesEl.textContent = pages;
+            if (anatomyEl) anatomyEl.textContent = topic.length > 18 ? topic.slice(0, 16) + '…' : topic;
+        }
+
+        const dailyTips = [
+            'Повтори иннервацию языка — частый вопрос на экзамене по анатомии',
+            'Короткие видео крадут твой дофамин. Помни: ты сильнее алгоритма',
+            'Вода помогает мозгу работать. 8 стаканов — не просто цифра',
+            'Сегодня отличный день чтобы пройти карточки по брюшной аорте',
+            'Растяжка между занятиями снижает усталость на 40%',
+            'Печень — единственный орган, способный к регенерации. Как твоя мотивация',
+            '20 страниц в день = 600 страниц в месяц = 2 учебника',
+            'Лучшее время для повторения — перед сном. Мозг обрабатывает во сне',
+            'Сделай 10 приседаний прямо сейчас. Кровь побежит быстрее',
+            'Пантера верит в тебя. Даже если ты сама сомневаешься',
+        ];
+
+        function updateDailyTip() {
+            const tipEl = document.getElementById('dailyTip');
+            if (tipEl) {
+                const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+                tipEl.textContent = '💡 ' + dailyTips[dayOfYear % dailyTips.length];
+            }
+        }
+
+        let pomodoroInterval = null;
+        let pomodoroSeconds = 25 * 60;
+        let pomodoroRunning = false;
+
+        function startPomodoro() {
+            document.getElementById('pomodoroBox').style.display = 'block';
+            if (!pomodoroRunning) resetPomodoroSilent();
+        }
+
+        function togglePomodoro() {
+            const btn = document.getElementById('pomodoroStartBtn');
+            if (pomodoroRunning) {
+                clearInterval(pomodoroInterval); pomodoroRunning = false;
+                btn.textContent = 'Старт 🍅'; btn.classList.add('start');
+                document.getElementById('pomodoroStatus').textContent = 'Пауза ⏸';
+            } else {
+                pomodoroRunning = true; btn.textContent = 'Пауза ⏸'; btn.classList.remove('start');
+                document.getElementById('pomodoroStatus').textContent = 'Фокусируемся... 🧠';
+                pomodoroInterval = setInterval(() => {
+                    pomodoroSeconds--;
+                    updatePomodoroDisplay();
+                    if (pomodoroSeconds <= 0) {
+                        clearInterval(pomodoroInterval); pomodoroRunning = false;
+                        document.getElementById('pomodoroStatus').textContent = 'Готово! Сделай перерыв 5 мин ☕️';
+                        document.getElementById('pomodoroStartBtn').textContent = 'Старт 🍅';
+                        showToast('🍅 Помидорка готова! Время перерыва 5 мин');
+                        pomodoroSeconds = 25 * 60; updatePomodoroDisplay();
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetPomodoro() {
+            clearInterval(pomodoroInterval); pomodoroRunning = false; pomodoroSeconds = 25 * 60;
+            updatePomodoroDisplay();
+            document.getElementById('pomodoroStartBtn').textContent = 'Старт 🍅';
+            document.getElementById('pomodoroStatus').textContent = 'Готов к фокусировке 🧠';
+        }
+
+        function resetPomodoroSilent() {
+            clearInterval(pomodoroInterval); pomodoroRunning = false; pomodoroSeconds = 25 * 60;
+            updatePomodoroDisplay();
+            const btn = document.getElementById('pomodoroStartBtn');
+            if (btn) { btn.textContent = 'Старт 🍅'; btn.classList.add('start'); }
+            const status = document.getElementById('pomodoroStatus');
+            if (status) status.textContent = 'Готов к фокусировке 🧠';
+        }
+
+        function updatePomodoroDisplay() {
+            const timerEl = document.getElementById('pomodoroTimer');
+            if (!timerEl) return;
+            const mins = Math.floor(pomodoroSeconds / 60);
+            const secs = pomodoroSeconds % 60;
+            timerEl.textContent = String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+        }
+
+        function updateMainPageWidgets() {
+            updatePerfectDayBar();
+            updateMiniStats();
+            var topic = getAnatomyTopicByDate(new Date());
+            var repeats = getAnatomyReviewList().filter(function(item) { return item.label.indexOf('Повтор') === 0; });
+            var topicEl = document.getElementById('anatomyTopicPreview');
+            var repeatEl = document.getElementById('anatomyRepeatPreview');
+            if (topicEl) topicEl.textContent = '🧠 ' + (topic || 'Тема дня');
+            if (repeatEl) repeatEl.textContent = repeats.length > 0 ? 'Повтор: ' + repeats.map(function(r) { return r.topic; }).join(' • ') : 'Нет тем для повторения';
+            var bubbleAv = document.getElementById('bubbleAvatar');
+            if (bubbleAv) bubbleAv.textContent = getPantherEmoji().split(' ')[0] || '🐆';
+        }
+
+        // ============ FIX: СОХРАНЕНИЕ ИМЕНИ ============
+        (function() {
+            var savedName = localStorage.getItem('pulse_final_v2_name');
+            if (savedName) {
+                appData.name = savedName;
+                var nameInput = document.getElementById('nameInput');
+                if (nameInput) nameInput.value = savedName;
+            }
+            var nameInput = document.getElementById('nameInput');
+            if (nameInput) {
+                nameInput.addEventListener('change', function() {
+                    var newName = this.value || 'Студент-медик';
+                    appData.name = newName;
+                    localStorage.setItem('pulse_final_v2_name', newName);
+                    saveData();
+                });
+            }
+        })();
+
+        // ============ INIT ============
+        updateStreak();
+        checkPeriodEnd();
+        saveData();
+        renderAll();
+        updateMainPageWidgets();
+        updateDailyTip();
+        checkDailyGift();
+
+        setInterval(() => {
+            updateStreak();
+            saveData();
+            if (currentTab === 'tab-home') renderAll();
+        }, 60000);
+    </script>
+</body>
+</html>
